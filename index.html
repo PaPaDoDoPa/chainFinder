@@ -1,84 +1,128 @@
 <!DOCTYPE html>
 <html lang="el"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Εύρεση Συμβατότητας</title>
+<title>Οδηγός Συμβατότητας — Λάμες & Αλυσίδες</title>
 <style>
- *{box-sizing:border-box} body{font-family:system-ui,Arial,sans-serif;margin:0;background:#f5f6f8;color:#1c1c1c}
- .wrap{max-width:920px;margin:0 auto;padding:20px}
- h1{font-size:20px;font-weight:600;margin:0 0 14px}
- .tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid #e3e3e3}
- .tab{padding:10px 16px;font-size:14px;font-weight:600;border:none;background:none;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
- .tab.active{color:#1c7a4d;border-bottom-color:#1c7a4d}
- .panel{display:none} .panel.active{display:block}
- .pickers{display:flex;gap:12px;flex-wrap:wrap}
- .field{flex:1;min-width:220px} label{display:block;font-size:13px;color:#555;margin-bottom:4px}
- select{width:100%;padding:10px;font-size:15px;border:1px solid #ccc;border-radius:8px;background:#fff}
- select:disabled{background:#eee;color:#999}
- .msg{margin-top:16px;padding:12px 14px;border-radius:8px;font-size:14px}
+ :root{--orange:#ff5800;--ink:#1a1a1a;--muted:#6b6b6b;--bg:#f1f1f1;--line:#e4e4e4;
+       --in:#2e7d32;--out:#c0392b;--own:#1c7a4d;--amber:#8a6d00;}
+ *{box-sizing:border-box}
+ body{font-family:"Helvetica Neue",Arial,system-ui,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
+ .wrap{max-width:1180px;margin:0 auto;padding:0 24px 48px}
+ header{background:#fff;border-top:4px solid var(--orange);box-shadow:0 1px 0 var(--line)}
+ .head-in{max-width:1180px;margin:0 auto;padding:22px 24px 0}
+ .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);font-weight:700;margin:0}
+ h1{font-size:30px;font-weight:800;letter-spacing:-.01em;margin:4px 0 2px}
+ .sub{color:var(--muted);font-size:14px;margin:0 0 18px;max-width:640px}
+ .tabs{display:flex;gap:28px;border-bottom:1px solid var(--line)}
+ .tab{padding:12px 2px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+      border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
+ .tab.active{color:var(--ink);border-bottom-color:var(--orange)}
+ .msg{margin:18px 0;padding:12px 14px;border-radius:6px;font-size:14px}
  .msg.err{background:#fdecea;border:1px solid #f5c6cb;color:#a12} .msg.load{background:#eef;border:1px solid #ccd;color:#446}
- .detail{margin-top:18px;background:#fff;border:1px solid #e3e3e3;border-radius:10px;padding:16px 18px;display:none}
- .detail.show{display:block}
- .detail .title{font-size:17px;font-weight:600;margin:0}
- .detail .sku{font-size:13px;color:#888;margin:2px 0 14px;font-family:monospace}
- .detail .specs-h{font-size:13px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.03em;margin:0 0 8px}
- .specs{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:14px}
- .specs dt{color:#666} .specs dd{margin:0;font-weight:500}
- .cols{display:flex;gap:16px;margin-top:18px;flex-wrap:wrap}
- .col{flex:1;min-width:280px;background:#fff;border:1px solid #e3e3e3;border-radius:10px;overflow:hidden}
- .col.full{flex-basis:100%}
- .col h2{font-size:15px;font-weight:600;margin:0;padding:12px 14px;background:#fafafa;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
- .col h2 .cnt{color:#888;font-weight:400}
- .col.guides h2{background:#e1f5ee} .col.chains h2{background:#faece7} .col.saws h2{background:#eaf0fb}
- ul{list-style:none;margin:0;padding:0} li{padding:9px 14px;font-size:14px;border-bottom:1px solid #f2f2f2;line-height:1.4}
- li:last-child{border-bottom:none} .empty{padding:14px;color:#999;font-size:14px}
- li.oos{color:#c0392b}
- .tag{font-size:11px;font-weight:600;color:#1c7a4d;background:#e1f5ee;border-radius:4px;padding:1px 6px;margin-left:6px}
- .tag.comp{color:#8a6d00;background:#fbf3d6}
- .legend{margin-top:10px;font-size:12px;color:#888} .legend .r{color:#c0392b}
-</style></head><body><div class="wrap">
-<h1>Εύρεση Συμβατότητας</h1>
-<div class="tabs">
- <button class="tab active" data-tab="byMachine">Ανά Αλυσοπρίονο</button>
- <button class="tab" data-tab="byChain">Ανά Αλυσίδα</button>
-</div>
+ .panel{display:none} .panel.active{display:block}
+ .layout{display:flex;gap:28px;align-items:flex-start;margin-top:24px}
+ .rail{width:300px;flex:none;position:sticky;top:18px}
+ .results{flex:1;min-width:0}
+ .rail-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;margin-bottom:16px}
+ .rail-card h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:700}
+ label{display:block;font-size:12px;color:var(--muted);margin:12px 0 5px;font-weight:600}
+ label:first-of-type{margin-top:0}
+ select{width:100%;padding:11px;font-size:15px;border:1px solid #ccc;border-radius:6px;background:#fff;color:var(--ink)}
+ select:disabled{background:#f3f3f3;color:#aaa}
+ .specs{display:grid;grid-template-columns:max-content 1fr;gap:7px 14px;font-size:13.5px}
+ .specs dt{color:var(--muted)} .specs dd{margin:0;font-weight:600}
+ .detail-name{font-size:16px;font-weight:800;margin:0 0 2px}
+ .detail-sku{font-size:12px;color:var(--muted);font-family:monospace;margin:0 0 14px}
+ .section{margin-bottom:28px}
+ .section-h{display:flex;align-items:baseline;gap:10px;margin:0 0 14px}
+ .section-h .t{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+ .section-h .c{font-size:13px;color:var(--muted)}
+ .section-h .bar{flex:1;height:1px;background:var(--line)}
+ .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:14px}
+ .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:15px;display:flex;flex-direction:column;gap:7px;
+       min-height:118px;transition:box-shadow .15s,transform .15s}
+ .card:hover{box-shadow:0 6px 18px rgba(0,0,0,.08);transform:translateY(-2px)}
+ .card .ey{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+ .card .nm{font-weight:700;font-size:13.5px;line-height:1.32}
+ .card .sk{font-family:monospace;font-size:11.5px;color:var(--muted)}
+ .chip{margin-top:auto;align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+ .chip.in{background:#e6f4ea;color:var(--in)} .chip.out{background:#fdecea;color:var(--out)}
+ .chip.own{background:#e1f5ee;color:var(--own)} .chip.comp{background:#fbf3d6;color:var(--amber)}
+ .empty{padding:18px;color:#999;font-size:14px;background:#fff;border:1px dashed var(--line);border-radius:8px}
+ .placeholder{padding:40px 18px;color:#aaa;font-size:15px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:8px}
+ @media(max-width:760px){.layout{flex-direction:column}.rail{width:100%;position:static}}
+</style></head><body>
+<header><div class="head-in">
+ <p class="eyebrow">Οδηγός Συμβατότητας</p>
+ <h1>Λάμες &amp; Αλυσίδες</h1>
+ <p class="sub">Βρείτε τη συμβατή λάμα και αλυσίδα για κάθε αλυσοπρίονο — ή ξεκινήστε από μια αλυσίδα και δείτε σε ποια μηχανήματα ταιριάζει.</p>
+ <div class="tabs">
+  <button class="tab active" data-tab="byMachine">Ανά Αλυσοπρίονο</button>
+  <button class="tab" data-tab="byChain">Ανά Αλυσίδα</button>
+ </div>
+</div></header>
+
+<div class="wrap">
 <div id="status" class="msg load">Φόρτωση δεδομένων…</div>
 
-<!-- TAB 1: choose chainsaw -> our bars & chains -->
-<div class="panel active" id="panel-byMachine">
- <div class="pickers">
-  <div class="field"><label>Μάρκα</label><select id="brand" disabled></select></div>
-  <div class="field"><label>Μοντέλο / Προϊόν</label><select id="model" disabled></select></div>
- </div>
- <div class="detail" id="detail">
-  <p class="title" id="d-name"></p>
-  <p class="sku" id="d-sku"></p>
-  <p class="specs-h">Τεχνικά χαρακτηριστικά</p>
-  <dl class="specs">
+<!-- TAB 1 -->
+<div class="panel active" id="panel-byMachine"><div class="layout">
+ <aside class="rail">
+  <div class="rail-card">
+   <h3>Επιλογή μηχανήματος</h3>
+   <label>Μάρκα</label><select id="brand" disabled></select>
+   <label>Μοντέλο / Προϊόν</label><select id="model" disabled></select>
+  </div>
+  <div class="rail-card" id="detail" style="display:none">
+   <p class="detail-name" id="d-name"></p>
+   <p class="detail-sku" id="d-sku"></p>
+   <h3>Τεχνικά χαρακτηριστικά</h3>
+   <dl class="specs">
     <dt>Μήκος</dt><dd id="d-length"></dd>
     <dt>Mount</dt><dd id="d-mount"></dd>
-    <dt>Βήμα (Pitch)</dt><dd id="d-pitch"></dd>
-    <dt>Πάχος (Gauge)</dt><dd id="d-gauge"></dd>
-    <dt>Οδηγοί (Links)</dt><dd id="d-links"></dd>
-  </dl>
- </div>
- <div class="cols">
-  <div class="col guides"><h2>Συμβατές Λάμες <span class="cnt" id="gc"></span></h2><ul id="guides"><li class="empty">Επιλέξτε μοντέλο</li></ul></div>
-  <div class="col chains"><h2>Συμβατές Αλυσίδες <span class="cnt" id="cc"></span></h2><ul id="chains"><li class="empty">Επιλέξτε μοντέλο</li></ul></div>
- </div>
- <p class="legend"><span class="r">Κόκκινο</span> = προϊόν χωρίς διαθέσιμο απόθεμα (0 stock)</p>
-</div>
+    <dt>Βήμα</dt><dd id="d-pitch"></dd>
+    <dt>Πάχος</dt><dd id="d-gauge"></dd>
+    <dt>Οδηγοί</dt><dd id="d-links"></dd>
+   </dl>
+  </div>
+ </aside>
+ <main class="results">
+  <div id="m-placeholder" class="placeholder">Επιλέξτε μάρκα και μοντέλο για να δείτε τις συμβατές λάμες και αλυσίδες.</div>
+  <div id="m-output" style="display:none">
+   <section class="section">
+    <div class="section-h"><span class="t">Συμβατές Λάμες</span><span class="c" id="gc"></span><span class="bar"></span></div>
+    <div class="grid" id="guides"></div>
+   </section>
+   <section class="section">
+    <div class="section-h"><span class="t">Συμβατές Αλυσίδες</span><span class="c" id="cc"></span><span class="bar"></span></div>
+    <div class="grid" id="chains"></div>
+   </section>
+  </div>
+ </main>
+</div></div>
 
-<!-- TAB 2: choose our chain -> compatible chainsaws (ours + competition) -->
-<div class="panel" id="panel-byChain">
- <div class="pickers">
-  <div class="field"><label>Μάρκα Αλυσίδας (ΠΠΑΕΒΕ)</label><select id="cbrand" disabled></select></div>
-  <div class="field"><label>Αλυσίδα</label><select id="cmodel" disabled></select></div>
- </div>
- <div class="detail" id="cdetail"><p class="title" id="cd-name"></p><p class="sku" id="cd-sku"></p></div>
- <div class="cols">
-  <div class="col saws full"><h2>Συμβατά Αλυσοπρίονα <span class="cnt" id="sc"></span></h2><ul id="saws"><li class="empty">Επιλέξτε αλυσίδα</li></ul></div>
- </div>
- <p class="legend"><span class="tag">ΠΠΑΕΒΕ</span> = αλυσοπρίονο που διαθέτουμε · υπόλοιπα = ανταγωνισμός</p>
-</div>
+<!-- TAB 2 -->
+<div class="panel" id="panel-byChain"><div class="layout">
+ <aside class="rail">
+  <div class="rail-card">
+   <h3>Επιλογή αλυσίδας (δικές μας)</h3>
+   <label>Μάρκα</label><select id="cbrand" disabled></select>
+   <label>Αλυσίδα</label><select id="cmodel" disabled></select>
+  </div>
+  <div class="rail-card" id="cdetail" style="display:none">
+   <p class="detail-name" id="cd-name"></p>
+   <p class="detail-sku" id="cd-sku"></p>
+  </div>
+ </aside>
+ <main class="results">
+  <div id="c-placeholder" class="placeholder">Επιλέξτε μία από τις δικές μας αλυσίδες για να δείτε σε ποια αλυσοπρίονα ταιριάζει.</div>
+  <div id="c-output" style="display:none">
+   <section class="section">
+    <div class="section-h"><span class="t">Συμβατά Αλυσοπρίονα</span><span class="c" id="sc"></span><span class="bar"></span></div>
+    <div class="grid" id="saws"></div>
+   </section>
+  </div>
+ </main>
+</div></div>
 </div>
 <script>
 /* ---------- CSV parse + shaping (CB_key: saw↔bar, BC_key: saw↔chain) ---------- */
@@ -120,33 +164,33 @@ const $=id=>document.getElementById(id);
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function uniq(a){return [...new Set(a)];}
 function num(v){const n=parseFloat(v);return isNaN(n)?v:(Number.isInteger(n)?n:String(n));}
-function label(x){return [x.br,x.d,x.sku].filter(Boolean).join(' - ');}
+function lc(v){return String(v||'').localeCompare;}
 function vals(rows,f){return uniq(rows.map(r=>r[f]).filter(x=>x!=='' && x!=null));}
 function set(id,arr){$(id).textContent=arr.length?arr.join(', '):'—';}
 function fillSelect(sel,items){sel.innerHTML='<option value="">— επιλέξτε —</option>'+items.map(x=>`<option>${esc(x)}</option>`).join('');}
+function prodCard(x){const oos=parseFloat(x.st)<=0;
+  return `<div class="card"><div class="ey">${esc(x.br||'')}</div><div class="nm">${esc(x.d||'')}</div>`+
+    `<div class="sk">${esc(x.sku||'')}</div>`+
+    `<span class="chip ${oos?'out':'in'}">${oos?'Εξαντλημένο':'Διαθέσιμο'}</span></div>`;}
+function sawCard(m){return `<div class="card"><div class="ey">${esc(m.b||'')}</div><div class="nm">${esc(m.n||'')}</div>`+
+    `<span class="chip ${m.own?'own':'comp'}">${m.own?'Δικό μας':'Ανταγωνισμός'}</span></div>`;}
 
 let DATA={machines:[],bars:[],chains:[]}, barsByCB={}, chainsByBC={}, machinesByBC={};
-
 function init(d){
   DATA=d; barsByCB={}; chainsByBC={}; machinesByBC={};
   for(const b of DATA.bars)(barsByCB[b.cb]=barsByCB[b.cb]||[]).push(b);
   for(const c of DATA.chains)(chainsByBC[c.bc]=chainsByBC[c.bc]||[]).push(c);
   for(const m of DATA.machines) if(m.bc)(machinesByBC[m.bc]=machinesByBC[m.bc]||[]).push(m);
-  // Tab 1 brand list (all machine brands)
-  fillSelect($('brand'), [...new Set(DATA.machines.map(s=>s.b))].sort((a,b)=>String(a).localeCompare(b,'el')));
-  $('brand').disabled=false;
-  // Tab 2 chain-brand list (our chains)
-  fillSelect($('cbrand'), [...new Set(DATA.chains.map(c=>c.br))].sort((a,b)=>String(a).localeCompare(b,'el')));
-  $('cbrand').disabled=false;
+  fillSelect($('brand'), [...new Set(DATA.machines.map(s=>s.b))].sort((a,b)=>String(a).localeCompare(b,'el'))); $('brand').disabled=false;
+  fillSelect($('cbrand'), [...new Set(DATA.chains.map(c=>c.br))].sort((a,b)=>String(a).localeCompare(b,'el'))); $('cbrand').disabled=false;
   $('status').style.display='none';
 }
-/* ---------- Tab switching ---------- */
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
   t.classList.add('active'); $('panel-'+t.dataset.tab).classList.add('active');
 });
-/* ---------- TAB 1: chainsaw -> bars & chains ---------- */
+/* ---------- TAB 1 ---------- */
 const brandSel=$('brand'), modelSel=$('model');
 brandSel.onchange=()=>{
   fillSelect(modelSel, [...new Set(DATA.machines.filter(s=>s.b===brandSel.value).map(s=>s.n))].sort((a,b)=>String(a).localeCompare(b,'el')));
@@ -154,29 +198,27 @@ brandSel.onchange=()=>{
 };
 modelSel.onchange=render1;
 function render1(){
-  const detail=$('detail'), guidesUl=$('guides'), chainsUl=$('chains');
-  if(!modelSel.value){detail.classList.remove('show');guidesUl.innerHTML=chainsUl.innerHTML='<li class="empty">Επιλέξτε μοντέλο</li>';$('gc').textContent=$('cc').textContent='';return;}
+  if(!modelSel.value){$('detail').style.display='none';$('m-output').style.display='none';$('m-placeholder').style.display='block';return;}
+  $('m-placeholder').style.display='none'; $('m-output').style.display='block';
   const rows=DATA.machines.filter(s=>s.b===brandSel.value&&s.n===modelSel.value);
-  detail.classList.add('show');
+  $('detail').style.display='block';
   $('d-name').textContent=modelSel.value;
   $('d-sku').textContent=vals(rows,'sku').join(' / ')||'—';
   const lengths=uniq(rows.map(r=>{const cm=num(r.lcm),inch=num(r.lin);
      if(r.lcm&&r.lin)return cm+' cm / '+inch+'"'; if(r.lcm)return cm+' cm'; if(r.lin)return inch+'"'; return '';}).filter(Boolean));
   set('d-length',lengths); set('d-mount',vals(rows,'mount')); set('d-pitch',vals(rows,'pitch'));
   set('d-gauge',vals(rows,'gauge').map(g=>num(g)+' mm')); set('d-links',vals(rows,'links').map(num));
-  const cbKeys=uniq(rows.map(s=>s.cb).filter(Boolean));
-  const bcKeys=uniq(rows.map(s=>s.bc).filter(Boolean));
+  const cbKeys=uniq(rows.map(s=>s.cb).filter(Boolean)), bcKeys=uniq(rows.map(s=>s.bc).filter(Boolean));
   const gMap=new Map(), cMap=new Map();
-  for(const k of cbKeys) for(const b of (barsByCB[k]||[])) gMap.set(b.sku||label(b), b);
-  for(const k of bcKeys) for(const c of (chainsByBC[k]||[])) cMap.set(c.sku||label(c), c);
-  const g=[...gMap.values()].sort((a,b)=>label(a).localeCompare(label(b),'el'));
-  const ch=[...cMap.values()].sort((a,b)=>label(a).localeCompare(label(b),'el'));
-  $('gc').textContent=g.length; $('cc').textContent=ch.length;
-  const li=x=>`<li class="${parseFloat(x.st)<=0?'oos':''}">${esc(label(x))}</li>`;
-  guidesUl.innerHTML=g.length?g.map(li).join(''):'<li class="empty">Δεν βρέθηκαν</li>';
-  chainsUl.innerHTML=ch.length?ch.map(li).join(''):'<li class="empty">Δεν βρέθηκαν</li>';
+  for(const k of cbKeys) for(const b of (barsByCB[k]||[])) gMap.set(b.sku||b.d, b);
+  for(const k of bcKeys) for(const c of (chainsByBC[k]||[])) cMap.set(c.sku||c.d, c);
+  const g=[...gMap.values()].sort((a,b)=>(a.br+a.d).localeCompare(b.br+b.d,'el'));
+  const ch=[...cMap.values()].sort((a,b)=>(a.br+a.d).localeCompare(b.br+b.d,'el'));
+  $('gc').textContent=g.length+' προϊόντα'; $('cc').textContent=ch.length+' προϊόντα';
+  $('guides').innerHTML=g.length?g.map(prodCard).join(''):'<div class="empty">Δεν βρέθηκαν συμβατές λάμες.</div>';
+  $('chains').innerHTML=ch.length?ch.map(prodCard).join(''):'<div class="empty">Δεν βρέθηκαν συμβατές αλυσίδες.</div>';
 }
-/* ---------- TAB 2: our chain -> compatible chainsaws ---------- */
+/* ---------- TAB 2 ---------- */
 const cbrandSel=$('cbrand'), cmodelSel=$('cmodel');
 cbrandSel.onchange=()=>{
   fillSelect(cmodelSel, [...new Set(DATA.chains.filter(c=>c.br===cbrandSel.value).map(c=>c.d))].sort((a,b)=>String(a).localeCompare(b,'el')));
@@ -184,21 +226,20 @@ cbrandSel.onchange=()=>{
 };
 cmodelSel.onchange=render2;
 function render2(){
-  const cdetail=$('cdetail'), sawsUl=$('saws');
-  if(!cmodelSel.value){cdetail.classList.remove('show');sawsUl.innerHTML='<li class="empty">Επιλέξτε αλυσίδα</li>';$('sc').textContent='';return;}
+  if(!cmodelSel.value){$('cdetail').style.display='none';$('c-output').style.display='none';$('c-placeholder').style.display='block';return;}
+  $('c-placeholder').style.display='none'; $('c-output').style.display='block';
   const crows=DATA.chains.filter(c=>c.br===cbrandSel.value&&c.d===cmodelSel.value);
-  cdetail.classList.add('show');
-  $('cd-name').textContent=cbrandSel.value+' — '+cmodelSel.value;
-  $('cd-sku').textContent=vals(crows,'sku').join(' / ')||'—';
+  $('cdetail').style.display='block';
+  $('cd-name').textContent=cmodelSel.value;
+  $('cd-sku').textContent=cbrandSel.value+' · '+(vals(crows,'sku').join(' / ')||'—');
   const bcKeys=uniq(crows.map(c=>c.bc).filter(Boolean));
   const sMap=new Map();
   for(const k of bcKeys) for(const m of (machinesByBC[k]||[])) sMap.set(m.b+'|'+m.n, m);
-  const saws=[...sMap.values()].sort((a,b)=>(a.b+a.n).localeCompare(b.b+b.n,'el'));
-  $('sc').textContent=saws.length;
-  const li=m=>`<li>${esc(m.b+' - '+m.n)}${m.own?'<span class="tag">ΠΠΑΕΒΕ</span>':'<span class="tag comp">ανταγ.</span>'}</li>`;
-  sawsUl.innerHTML=saws.length?saws.map(li).join(''):'<li class="empty">Δεν βρέθηκαν συμβατά αλυσοπρίονα</li>';
+  const saws=[...sMap.values()].sort((a,b)=>(Number(b.own)-Number(a.own))||(a.b+a.n).localeCompare(b.b+b.n,'el'));
+  $('sc').textContent=saws.length+' μηχανήματα';
+  $('saws').innerHTML=saws.length?saws.map(sawCard).join(''):'<div class="empty">Δεν βρέθηκαν συμβατά αλυσοπρίονα.</div>';
 }
-/* ---------- load CSV ---------- */
+/* ---------- load ---------- */
 fetch('data.csv',{cache:'no-store'})
   .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status); return r.text();})
   .then(t=>init(shape(parseCSV(t))))
