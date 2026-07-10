@@ -54,10 +54,11 @@
 <header><div class="head-in">
  <p class="eyebrow">Οδηγός Συμβατότητας</p>
  <h1>Λάμες &amp; Αλυσίδες</h1>
- <p class="sub">Βρείτε τη συμβατή λάμα και αλυσίδα για κάθε αλυσοπρίονο — ή ξεκινήστε από μια αλυσίδα και δείτε σε ποια μηχανήματα ταιριάζει.</p>
+ <p class="sub">Βρείτε τη συμβατή λάμα και αλυσίδα για κάθε αλυσοπρίονο — ή ξεκινήστε από μία αλυσίδα ή λάμα και δείτε σε ποια μηχανήματα ταιριάζει.</p>
  <div class="tabs">
   <button class="tab active" data-tab="byMachine">Ανά Αλυσοπρίονο</button>
   <button class="tab" data-tab="byChain">Ανά Αλυσίδα</button>
+  <button class="tab" data-tab="byBar">Ανά Λάμα</button>
  </div>
 </div></header>
 
@@ -123,6 +124,31 @@
   </div>
  </main>
 </div></div>
+
+<!-- TAB 3 -->
+<div class="panel" id="panel-byBar"><div class="layout">
+ <aside class="rail">
+  <div class="rail-card">
+   <h3>Επιλογή λάμας (δικές μας)</h3>
+   <label>Μάρκα</label><select id="bbrand" disabled></select>
+   <label>Λάμα</label><select id="bmodel" disabled></select>
+  </div>
+  <div class="rail-card" id="bdetail" style="display:none">
+   <p class="detail-name" id="bd-name"></p>
+   <p class="detail-sku" id="bd-sku"></p>
+  </div>
+ </aside>
+ <main class="results">
+  <div id="b-placeholder" class="placeholder">Επιλέξτε μία από τις δικές μας λάμες για να δείτε σε ποια αλυσοπρίονα ταιριάζει.</div>
+  <div id="b-output" style="display:none">
+   <section class="section">
+    <div class="section-h"><span class="t">Συμβατά Αλυσοπρίονα</span><span class="c" id="bsc"></span><span class="bar"></span></div>
+    <div class="grid" id="bsaws"></div>
+   </section>
+  </div>
+ </main>
+</div></div>
+
 </div>
 <script>
 /* ---------- CSV parse + shaping (CB_key: saw↔bar, BC_key: saw↔chain) ---------- */
@@ -175,14 +201,18 @@ function prodCard(x){const oos=parseFloat(x.st)<=0;
 function sawCard(m){return `<div class="card"><div class="ey">${esc(m.b||'')}</div><div class="nm">${esc(m.n||'')}</div>`+
     `<span class="chip ${m.own?'own':'comp'}">${m.own?'Δικό μας':'Ανταγωνισμός'}</span></div>`;}
 
-let DATA={machines:[],bars:[],chains:[]}, barsByCB={}, chainsByBC={}, machinesByBC={};
+let DATA={machines:[],bars:[],chains:[]}, barsByCB={}, chainsByBC={}, machinesByBC={}, machinesByCB={};
 function init(d){
-  DATA=d; barsByCB={}; chainsByBC={}; machinesByBC={};
+  DATA=d; barsByCB={}; chainsByBC={}; machinesByBC={}; machinesByCB={};
   for(const b of DATA.bars)(barsByCB[b.cb]=barsByCB[b.cb]||[]).push(b);
   for(const c of DATA.chains)(chainsByBC[c.bc]=chainsByBC[c.bc]||[]).push(c);
-  for(const m of DATA.machines) if(m.bc)(machinesByBC[m.bc]=machinesByBC[m.bc]||[]).push(m);
+  for(const m of DATA.machines){
+    if(m.bc)(machinesByBC[m.bc]=machinesByBC[m.bc]||[]).push(m);
+    if(m.cb)(machinesByCB[m.cb]=machinesByCB[m.cb]||[]).push(m);
+  }
   fillSelect($('brand'), [...new Set(DATA.machines.map(s=>s.b))].sort((a,b)=>String(a).localeCompare(b,'el'))); $('brand').disabled=false;
   fillSelect($('cbrand'), [...new Set(DATA.chains.map(c=>c.br))].sort((a,b)=>String(a).localeCompare(b,'el'))); $('cbrand').disabled=false;
+  fillSelect($('bbrand'), [...new Set(DATA.bars.map(b=>b.br))].sort((a,b)=>String(a).localeCompare(b,'el'))); $('bbrand').disabled=false;
   $('status').style.display='none';
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
@@ -239,6 +269,29 @@ function render2(){
   $('sc').textContent=saws.length+' μηχανήματα';
   $('saws').innerHTML=saws.length?saws.map(sawCard).join(''):'<div class="empty">Δεν βρέθηκαν συμβατά αλυσοπρίονα.</div>';
 }
+
+/* ---------- TAB 3 ---------- */
+const bbrandSel=$('bbrand'), bmodelSel=$('bmodel');
+bbrandSel.onchange=()=>{
+  fillSelect(bmodelSel, [...new Set(DATA.bars.filter(b=>b.br===bbrandSel.value).map(b=>b.d))].sort((a,b)=>String(a).localeCompare(b,'el')));
+  bmodelSel.disabled=!bbrandSel.value; render3();
+};
+bmodelSel.onchange=render3;
+function render3(){
+  if(!bmodelSel.value){$('bdetail').style.display='none';$('b-output').style.display='none';$('b-placeholder').style.display='block';return;}
+  $('b-placeholder').style.display='none'; $('b-output').style.display='block';
+  const brows=DATA.bars.filter(b=>b.br===bbrandSel.value&&b.d===bmodelSel.value);
+  $('bdetail').style.display='block';
+  $('bd-name').textContent=bmodelSel.value;
+  $('bd-sku').textContent=bbrandSel.value+' · '+(vals(brows,'sku').join(' / ')||'—');
+  const cbKeys=uniq(brows.map(b=>b.cb).filter(Boolean));
+  const sMap=new Map();
+  for(const k of cbKeys) for(const m of (machinesByCB[k]||[])) sMap.set(m.b+'|'+m.n, m);
+  const saws=[...sMap.values()].sort((a,b)=>(Number(b.own)-Number(a.own))||(a.b+a.n).localeCompare(b.b+b.n,'el'));
+  $('bsc').textContent=saws.length+' μηχανήματα';
+  $('bsaws').innerHTML=saws.length?saws.map(sawCard).join(''):'<div class="empty">Δεν βρέθηκαν συμβατά αλυσοπρίονα.</div>';
+}
+
 /* ---------- load ---------- */
 fetch('data.csv',{cache:'no-store'})
   .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status); return r.text();})
